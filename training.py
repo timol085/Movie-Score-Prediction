@@ -28,8 +28,8 @@ test_data = data[train_size:]
 sentiment_pipeline = Pipeline([
     ('vect', CountVectorizer()),
     ('tfidf', TfidfTransformer()),
-    # ('clf', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-7, random_state=42, max_iter=500, tol=None)),
-    ('clf', LogisticRegression(solver='liblinear', random_state=42, multi_class='ovr')),
+    ('clf', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-7, random_state=42, max_iter=500, tol=None)),
+    # ('clf', LogisticRegression(solver='liblinear', random_state=42, multi_class='ovr')),
 ])
 
 # Train the model
