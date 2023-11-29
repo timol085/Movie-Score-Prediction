@@ -13,14 +13,10 @@ import numpy as np
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LogisticRegression
-from sklearn import metrics
 import pickle
 
 # read in dataset
 reviews = pd.read_csv("./input/IMDB Dataset.csv")
-
-movie_reviews = pd.read_csv("./input/itchaptertwo.csv")
-movie_reviews.drop_duplicates(subset="review", keep="first", inplace=True)
 
 # take away all columns except ci and rc
 reviews = reviews[["sentiment", "review"]]
@@ -30,24 +26,39 @@ reviews = reviews[["sentiment", "review"]]
 reviews = reviews.dropna()
 
 # read in the reviews and critic (rotten/fresh)
-all_sent = reviews.sentiment
-all_rev = reviews.review
+all_ci = reviews.sentiment
+all_rc = reviews.review
+
+# review from a specific movie
+review_ci = all_ci[143:280]
+review_rc = all_rc[143:280]
 
 # shuffle data
-all_sent, all_rev = shuffle(all_sent, all_rev, random_state=67)
+all_ci, all_rc = shuffle(all_ci, all_rc, random_state=67)
 
+# take out shuffled training set with 100000
+train_ci = all_ci[:199999]
+train_rc = all_rc[:199999]
 
-# test data
-test_sent = all_sent[100000:199999]
-test_rev = all_rev[100000:199999]
+test_ci = all_ci[100000:199999]
+test_rc = all_rc[100000:199999]
 
-# tomatometer model
-predictionModel = pickle.load(open("trainedModel_LR.sav", "rb"))
+# PIPELINE
+tomato_clf = Pipeline(
+    [
+        ("vect", CountVectorizer()),
+        ("tfidf", TfidfTransformer()),
+        ("clf", LogisticRegression(solver="liblinear", multi_class="auto")),
+    ]
+)
+# ('clf', SGDClassifier(loss='hinge', penalty='l2',alpha=1e-5, random_state=42
+# ,max_iter=8, tol=None)),
+# ])
+# ('clf', MultinomialNB()),
+# ])
 
+tomato_clf.fit(all_rc, all_ci)
+# print("hej")
 
-predicted = predictionModel.predict(movie_reviews.review)
-print(len(movie_reviews))
-print(len(predicted))
-# print("confusion matrix: ", metrics.confusion_matrix(movie_reviews, predicted))
-
-print("Predicted score by ussss: ", np.mean(predicted == "positive"))
+filename = "trainedModel_LR.sav"
+pickle.dump(tomato_clf, open(filename, "wb"))

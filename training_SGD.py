@@ -16,10 +16,10 @@ from sklearn.linear_model import LogisticRegression
 import pickle
 
 # read in dataset
-reviews = pd.read_csv("IMDB Dataset.csv")
+reviews = pd.read_csv("./input/IMDB Dataset.csv")
 
 # take away all columns except ci and rc
-reviews = reviews[['sentiment','review']]
+reviews = reviews[["sentiment", "review"]]
 
 
 # drop all empty reviews
@@ -30,23 +30,34 @@ all_sent = reviews.sentiment
 all_rev = reviews.review
 
 # review from a specific movie
-review_sent= all_sent[143:280]
+review_sent = all_sent[143:280]
 review_rev = all_rev[143:280]
 
 # shuffle data
 all_sent, all_rev = shuffle(all_sent, all_rev, random_state=67)
 
 # PIPELINE
-my_clf = Pipeline([
- ('vect', CountVectorizer()),
- ('tfidf', TfidfTransformer()),
-('clf', SGDClassifier(loss='hinge', penalty='l2',alpha=1e-7, random_state=42
-,max_iter=500, tol=None)),
-])
+my_clf = Pipeline(
+    [
+        ("vect", CountVectorizer()),
+        ("tfidf", TfidfTransformer()),
+        (
+            "clf",
+            SGDClassifier(
+                loss="hinge",
+                penalty="l2",
+                alpha=1e-7,
+                random_state=42,
+                max_iter=500,
+                tol=None,
+            ),
+        ),
+    ]
+)
 
 my_clf.fit(all_rev, all_sent)
 
 
 # Save model and write to sav-file
-filename = 'trainedModel_SGD.sav'
-pickle.dump(my_clf,open(filename, 'wb'))
+filename = "trainedModel_SGD.sav"
+pickle.dump(my_clf, open(filename, "wb"))
