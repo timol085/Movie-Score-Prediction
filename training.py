@@ -36,6 +36,6 @@ sentiment_pipeline = Pipeline([
 sentiment_pipeline.fit(train_data['review'], train_data['sentiment'])
 
 # Save the trained model to a .sav file
-filename = 'sentimentModelLR.sav'
-# filename = 'sentimentModelSGD.sav'
+# filename = 'sentimentModelLR.sav'
+filename = 'sentimentModelSGD.sav'
 pickle.dump(sentiment_pipeline, open(filename, 'wb'))
