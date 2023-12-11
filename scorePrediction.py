@@ -2,7 +2,7 @@ import pandas as pd
 import pickle
 
 # Load the trained sentiment analysis model from the .sav file
-sentiment_model = pickle.load(open('sentimentModelSGD.sav', 'rb'))
+sentiment_model = pickle.load(open('sentimentModelSGD_LR.sav', 'rb'))
 
 # Read the CSV file with reviews and sentiments
 reviews_df = pd.read_csv('input/parasite.csv')
